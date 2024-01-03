@@ -1,4 +1,4 @@
-# More Than You Ever Wanted to Know: Episode 1: Relational Databases and Object Relational Mappers
+# More Than You Ever Wanted to Know: Episode 1 - Relational Databases and Object Relational Mappers
 
 # DATABASE SETUP AND MANAGEMENT USING AN ORM (SQLAlchemy)
 
