@@ -18,11 +18,11 @@ The term ORM is short for Object Relational Mapper. An ORM performs 2 main tasks
 ### An Example Mapping:
 When we fetch the Demo user from our database, we receive the packet below as the response.<br>
 
-<img width="955" alt="db_select_response" src="https://github.com/crespohector/System-Design-Lecture-In-Mod-7/assets/107947798/37c5345f-3826-4e0a-94c4-78584b5acad3">
+<img width="955" alt="packet_hexdump" src="https://github.com/bkieselEducational/More-Than-You-Ever-Wanted-to-Know-Episode-1-Relational-Databases-and-Object-Relational-Mappers/assets/131717897/c07d1f54-3f5e-4c68-8756-99f399bbfa91">
 
 This packet has been formatted by the tool Wireshark and can be parsed as follows: On the far left, we simply have numbers of bytes in hexadecimal. So 0010 is actually the number 16. Each "line" consists of 16 bytes each in the center column. These are the raw bytes received by our client in hexidecimal notation. In the rightmost column we have a text representation of the packet. Note that many of the bytes in the packet are outside of the ASCII range and do not have glyph representations. These characters have been indicated with the strings of periods in the text '.....'. If we focus on the data portion of the packet, we see that 2 of the 4 PostgreSQL Headers represent the table row we queried for. The first, describes the table columns by name and the second provides the values for those columns in the row. Using this data in tabular format, SQLAlchemy can map the values to the respective keys and instantiate a class instance using this data! If we "unwind" the text representations of these 2 Headers we can loosely correlate the 2 as being 1 Header for "keys" and 1 being a Header with the "values" for those keys (Note: I believe the 'T' and the 'D' that begin the 2 headers are special control characters used by the PostgreSQL protocol but have not actually confirmed that...): 
 
-<img width="1146" alt="row_description_and_row_data" src="https://github.com/crespohector/System-Design-Lecture-In-Mod-7/assets/107947798/ec64d017-8761-4641-9715-1ba5d95b4058">
+<img width="1146" alt="table_def_row_def" src="https://github.com/bkieselEducational/More-Than-You-Ever-Wanted-to-Know-Episode-1-Relational-Databases-and-Object-Relational-Mappers/assets/131717897/d954dea3-a62b-4010-828d-0bb0cad1e7ee">
 
 Now that SQLAlchemy has the keys and the values that map to them, it can instantiate an object of class User, using these values, thereby providing us with a convenient Python object for us to interact with programmatically and ultimately return to the client side of our app. A class instance which we will turn into a dictionary as shown below:
 
@@ -147,10 +147,10 @@ the way that our backend communicates with the database is a little different. N
 each DBMS uses it's own proprietary protocol on top of the TCP / IP Protocol, which HTTP is also built on top of. In production we will see packets marked with PostgreSQL Headers! I also want to make a general note about how the TCP Protocol works. As we'll see in the screenshot below, EVERY packet that is recieved on either end of the communication will be ACKNOWLEDGED by sending an ACK TCP packet in response. This tells the sender of the packet that it was recieved successfully. As TCP has methods in place to ensure data integrity, this extra response allows us to check for the condition where a packet was lost or even malformed at some point in it's journey and allows the sender to re-send the packet when necessary. Also note that the sender will set a timeout when sending data. If an ACK packet isn't received by the expiry of the timer, it will automatically resend the packet! TCP offers assurance of data transmission!!
 
 ### TCP Acknowledgment Packets:
-<img width="1958" alt="tcp_ack" src="https://github.com/crespohector/System-Design-Lecture-In-Mod-7/assets/107947798/cd4c4cca-fade-4cde-98d5-5121547fcfd5">
+<img width="1958" alt="db_timing" src="https://github.com/bkieselEducational/More-Than-You-Ever-Wanted-to-Know-Episode-1-Relational-Databases-and-Object-Relational-Mappers/assets/131717897/54f54de3-3f96-4361-b5b3-bdcd08b2da11">
 
 ### PostgreSQL Transaction:
-<img width="1953" alt="db_transaction" src="https://github.com/crespohector/System-Design-Lecture-In-Mod-7/assets/107947798/aa9b1052-63b1-4ad8-bdf4-0fd2e48df5d6">
+<img width="1953" alt="transactions" src="https://github.com/bkieselEducational/More-Than-You-Ever-Wanted-to-Know-Episode-1-Relational-Databases-and-Object-Relational-Mappers/assets/131717897/64435ffe-b1e9-424e-8a06-99649966dedf">
 
 
 
@@ -158,7 +158,7 @@ each DBMS uses it's own proprietary protocol on top of the TCP / IP Protocol, wh
 
 As mentioned above, the SQL Language comprises a number of sub-classes of commands (DDL, DCL, DML, TCL). Or rather, all SQL commands fall into at least 1 of 4 possible categories. Below we shall see an example of the 4 categories and common SQL commands that belong to those categories. One note I'd like to make here is to mention the category of commands called DDL or Data Definition Language. These commands are used when creating, emptying, destroying, altering, and commenting database TABLES!! For this reason, we often see the line: "Will assume transactional DDL", when we are migrating our database schema to the database (flask db upgrade). As we are CREATING tables, we are using DDL commands and SQLAlchemy is kind enough to point this out to us!! Below is a list generated by chatGPT to outline these command categories:
 
-<img width="708" alt="SQL_Sub-categories" src="https://github.com/crespohector/System-Design-Lecture-In-Mod-7/assets/107947798/bd81de1c-05aa-416d-890a-23ef7978b87e">
+<img width="708" alt="sql_sub_categories" src="https://github.com/bkieselEducational/More-Than-You-Ever-Wanted-to-Know-Episode-1-Relational-Databases-and-Object-Relational-Mappers/assets/131717897/67c9fa71-4eb9-45d3-a2c9-9cdff6c3f288">
 
 # GOTCHAS:
 1. Note that if you are watching your Flask terminal and seeing a lot of unexpected SQL, it may be coming from your validation Form, not the visible endpoint code...
